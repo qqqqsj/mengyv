@@ -1,0 +1,30 @@
+# Netlify 逐发（per-deploy）响应头：放进部署根就随包生效，不用另配 netlify.toml。
+# 纪律只有一条——**文件名里没版号的必须每次回源，有版号的才可以长缓存**。
+#   · dist/app.v<ver>.{css,js}：版号进文件名＝内容寻址，同一个 URL 的内容永不变化，
+#     换版本就是换 URL，所以可以一年不动（下一次发布自然换名，不用清任何人缓存）。
+#   · index.html／sw.js／version.json／asset-manifest.json：这四件决定「这一版是哪一版」，
+#     被缓存住＝新版本推不出去（sw.js 尤其：浏览器拿不到新 sw，整站就停在旧代）。
+#   · img/*：牌面素材，雷诺曼那档靠 URL 上的 ?v= 破缓存；塔罗那副没带版号，故只给 30 天不 immutable。
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/version.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/asset-manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/manifest.json
+  Cache-Control: public, max-age=3600
+
+/dist/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/img/*
+  Cache-Control: public, max-age=2592000
